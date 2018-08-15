@@ -1,0 +1,9 @@
+/* default styles for extension "tx_felogin_pi1" */
+	.tx-felogin-pi1 label {
+		display: block;
+	}
+/* specific page styles for extension "tx_cssstyledcontent" */
+	.csc-textpic-intext-right-nowrap .csc-textpic-text { margin-right: 620px; }
+	.csc-textpic-intext-left-nowrap .csc-textpic-text { margin-left: 620px; }
+	.csc-textpic-intext-left-nowrap-66 .csc-textpic-text { margin-left: 66px; }
+	.csc-space-after-20 { margin-bottom: 20px !important; }

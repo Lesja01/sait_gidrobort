@@ -1,0 +1,220 @@
+jQuery.noConflict();
+jQuery(document).ready(function () {
+      if (jQuery('div#wrapper').html()) {
+            startMenuLang();
+//            startMenuMobil();
+      }
+      if (jQuery('div#slideshow').html()) {
+            startStartSideGallery();
+      }
+
+      if (jQuery('div#formhandler_contact_form').html()) {
+            startGbFormCheck();
+      }
+      jQuery('div.lang-select').click(function () {
+            //alert(jQuery('div.lang-select .lang-option').attr('open'));
+            if (jQuery('div.lang-select .lang-option').attr('open') == 'open') {
+                  jQuery('div.lang-select .lang-option').removeAttr('style');
+                  jQuery('div.lang-select .lang-option').removeAttr('open');
+            } else {
+                  jQuery('div.lang-select .lang-option').css('display', 'block');
+                  jQuery('div.lang-select .lang-option').attr('open', 'true');
+            }
+            //if( 
+      });
+      // Kundenbefragung zufällig einblenden
+      var min = 1;
+      var max = 3;
+      var x = Math.floor((Math.random() * (max - min + 1))) + min;
+      if (x == 2) {
+            jQuery('#c1250').show();
+      }
+
+      //start bxslider
+      jQuery('.bxslider').bxSlider({
+            mode: 'fade',
+            auto: true,
+//            controls: false,
+            autoStart: true,
+            speed: 2500
+      });
+});
+
+
+
+function startMenuLang() {
+      var activLang = jQuery('div.lang-option a.sel-lang').text();
+      jQuery('div.lang-select span').html(activLang);
+}
+
+function startGbFormCheck() {
+      var formErrField = jQuery('div.csc-mailform-field');
+
+      formErrField.each(function (i, item) {
+
+            if (jQuery('span.error')) {
+                  jQuery('span.error').parent().parent().parent().find("input").css('background-color', 'lightcoral');
+                  jQuery('span.error').parent().parent().parent().find("select").css('background-color', 'lightcoral');
+            }
+            ;
+
+      });
+}
+
+//new mobile menu
+jQuery(document).on('click', 'div.navbar-toggle', function(){
+      var menu = jQuery('.menu-main');
+      if(menu.hasClass('expand')){
+            menu.removeClass('expand');
+      } else{
+            menu.addClass('expand');
+      }
+});
+
+function startMenuMobil() {
+ 
+      if (jQuery('div.navbar-toggle').css('display') != "none") {
+
+            jQuery('div.lvl0').css('display', 'none');
+            jQuery('div.navbar-toggle').click(function () {
+
+                  if (jQuery('div.lvl0').css('display') != "none") {
+                        jQuery(this).parent().find('div.lvl0').css('display', 'none');
+                  } else {
+                        jQuery(this).parent().find('div.lvl0').css('display', 'block');
+                  }
+                  ;
+
+            });
+      } 
+}
+
+var actbgimg = 0;
+var anzbgimg = 0;
+var imgarr;
+var timerbgimg = 7000;
+var myGallery;
+var myGaTimer = 0;
+var timerBild = 4000;
+var timerEffect = 2000;
+var timerPause = 15000;
+var ssboxwidth = 0;
+
+function startStartSideGallery() {
+
+
+      (function ($) {
+            imgarr = jQuery('div#slideshow div.container');
+            anzbgimg = imgarr.length;
+            var imggallery = new Array();
+            var textarr = new Array();
+            var box;
+            var posx;
+            var posy;
+            var boxpadding;
+            var boxlineheight;
+            var boxfontsize;
+            imgarr.each(function (i, item) {
+                  imggallery[imggallery.length] = item.down('img').src;
+                  posx = item.down('div.x').innerHTML;
+                  posy = item.down('div.y').innerHTML;
+                  textarr[textarr.length] = item.down('div.fce-text').setStyle({
+                        top: posy + 'px',
+                        left: posx + 'px'
+                  });
+                  box = jQuery('<div>').attr('actionbox', i)
+                          .addClass('actionbox')
+                          .addClass('actionbox' + i)
+                          .css({
+                                width: '13px',
+                                height: '13px',
+                                position: 'absolute',
+                                bottom: '10px',
+                                left: (23 * i + 31) + 'px',
+                                backgroundColor: '#00497f',
+                                cursor: 'pointer'
+                          })
+                          .click(function () {
+                                var gallery = $("#slideshow").get(0);
+                                jQuery.mbBgndGallery.pause(gallery);
+                                if (myGaTimer > 0) {
+                                      window.clearTimeout(myGaTimer);
+                                }
+                                myGaTimer = window.setTimeout(function () {
+                                      var gallery = $("#slideshow").get(0);
+                                      window.clearTimeout(gallery.opt.changing);
+                                      jQuery.mbBgndGallery.play(gallery);
+                                      gallery.opt.paused = false;
+                                }, timerPause);
+                                var next = jQuery(this).attr('actionbox') - 1;
+                                if (next < 0) {
+                                      next = anzbgimg - 1;
+                                }
+                                myGallery[0].opt.imageCounter = next;
+                                jQuery.mbBgndGallery.next(gallery);
+                          });
+                  jQuery('div.slidenavi').append(box);
+            });
+
+            myGallery = new mbBgndGallery({
+                  containment: "#slideshow",
+                  timer: timerBild,
+                  effTimer: timerEffect,
+                  controls: false,
+                  grayScale: false,
+                  shuffle: false,
+                  preserveWidth: false,
+                  effect: "fade",
+                  images: imggallery,
+                  onStart: function () {
+                  },
+                  onPause: function () {
+                  },
+                  onPlay: function (opt) {
+                  },
+                  onChange: function (opt, idx) {
+
+                        var nssboxwidth = jQuery('div#slideshow div.slidebox').width();
+                        if (nssboxwidth != ssboxwidth) {
+                              // change textposition
+                              ssboxwidth = nssboxwidth;
+                              faktor = nssboxwidth / 1340;
+                              imgarr.each(function (i, item) {
+                                    posx = Math.round(parseInt(item.down('div.x').innerHTML) * faktor);
+                                    posy = Math.round(parseInt(item.down('div.y').innerHTML) * faktor);
+                                    boxpadding = Math.round(28 * faktor);
+                                    boxlineheight = Math.round(38 * faktor);
+                                    boxfontsize = Math.round(36 * faktor);
+                                    textarr[i] = item.down('div.fce-text').setStyle({
+                                          top: posy + 'px',
+                                          left: posx + 'px',
+                                          padding: boxpadding + 'px'
+                                    })
+                                    item.down('p').setStyle({
+                                          fontSize: boxfontsize + 'px',
+                                          lineHeight: boxlineheight + 'px'
+                                    });
+                              });
+                        }
+
+                        // Textblöcke ausschalten
+                        jQuery('div#slideshow div.container div.fce-text').hide();
+                        if (textarr[idx])
+                              textarr[idx].show();
+
+                        //alert(idx);  Steuerung der Fusszeile Content und Blöcke     
+
+                        jQuery('div#slideshow div.actionbox').each(function (i, item) {
+                              jQuery(this).css('backgroundColor', '#00407e');
+                        });
+                        jQuery('div#slideshow div.actionbox' + idx).first().css('backgroundColor', '#fcd400');
+                  },
+                  onNext: function (opt) {
+                  },
+                  onPrev: function (opt) {
+                  }
+            });
+
+      })(jQuery);
+      //windowResize();
+}
